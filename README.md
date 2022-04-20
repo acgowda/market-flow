@@ -1,6 +1,6 @@
 # marketflow
 ```
-. O .
+. O X
 . . .
-. X .
+. X X
 ```
