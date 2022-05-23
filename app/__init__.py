@@ -3,8 +3,8 @@ from flask import Flask, g, render_template, request
 import pickle
 # "No module named 'tensorflow_core.keras'" error?
 # https://github.com/tensorflow/tensorflow/issues/34607#issuecomment-617286830
-# from tensorflow import keras
-# from tensorflow.keras import Sequential
+from tensorflow import keras
+from tensorflow.keras import Sequential
 
 import pandas as pd
 import json
@@ -35,13 +35,18 @@ def test():
         # try:
         # assign the user's input to target
         target = request.form['target']
-
-        stock = yf.Ticker(target)
+        try:
+            stock = yf.Ticker(target)
+        except:
+            stock = yf.Ticker('AAPL')
         df = stock.history(period='6mo')
         df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
 
         # assign model to the pre-trained model.pkl
-        # model = pickle.load(open('model.pkl', 'rb'))
+        try:
+            model = pickle.load(open('model.pkl', 'rb'))
+        except:
+            pass
 
         ##### perform prediction on target with the model
 
@@ -130,12 +135,6 @@ def test():
         fig.update_yaxes(title_text="Volume", row=2, col=1)
         fig.update_yaxes(title_text="MACD", row=3, col=1)
 
-        # df = pd.DataFrame({
-        #     'Fruit': ['Apples', 'Oranges', 'Bananas', 'Apples', 'Oranges', 'Bananas'],
-        #     'Amount': [4, 1, 2, 2, 4, 5],
-        #     'City': ['SF', 'SF', 'SF', 'Montreal', 'Montreal', 'Montreal']
-        # })
-        # fig = px.bar(df, x='Fruit', y='Amount', color='City', barmode='group')
         graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
         #####
