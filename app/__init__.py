@@ -1,21 +1,12 @@
 from flask import Flask, g, render_template, request
-
-# import sklearn as sk
-# import matplotlib.pyplot as plt
-# import numpy as np
 import pickle
-
-# from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-# from matplotlib.figure import Figure
-
-# import io
-# import base64
 
 import pandas as pd
 import json
 import plotly
 import plotly.express as px
 
+# import data exploration module here
 
 
 app = Flask(__name__)
@@ -37,16 +28,18 @@ def test():
             # assign the user's input to target
             target = request.form['target']
 
+
             # assign model to the pre-trained model.pkl
-            # model = pickle.load(open('model/model.pkl', 'rb'))
+            model = pickle.load(open('model.pkl', 'rb'))
+
 
             ##### perform prediction on target with the model
 
-
-
-
+            # prediction = model.predict(target)
+            # prediction = prediction.argmax(axis=1)
 
             #####
+
 
             ##### create the plotly figure here. a random example is shown.
 
@@ -57,7 +50,7 @@ def test():
             })
             fig = px.bar(df, x='Fruit', y='Amount', color='City', barmode='group')
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
+            
             #####
 
 
