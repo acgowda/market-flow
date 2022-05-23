@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Overview{% endblock %}
+
+{% block nav %}
+<ul>
+  <li><a href="{{ url_for('main') }}" class="active">Overview</a></li>
+  <li><a href="{{ url_for('test') }}">Test Our Product</a></li>
+  <li><a href="{{ url_for('about') }}">About the Creators</a></li>
+</ul>
+{% endblock %}
+
+{% block header %}<h2>Overview</h2>{% endblock %}
+
+<!-- CONTENT BEGINS HERE -->
+
+{% block content %}
+  <p>
+    Welcome to Marketflow! This is a deep learning model that can be used for trading, developed by UCLA students in PIC16B. Visit the "Test Our Product" page to try out our product!
+  </p>
+  <p>
+    Our project utilizes a recurrent neural network pre-trained on a specified universe of securities to make predictions. Users can specify a target security and the model outputs whether the price is going "Up" or "Down".
+  </p>
+  <p>
+    We also test our model's performance on the most recent 60 days of data. This performance is shown on an interactive plot that displays the model’s trades and trading performance across time via a candlestick chart. In addition to this chart, we will also display the net profit of using this model to make trades, the number of trades made, and the percentage change in total portfolio value after the 60 day trading period. 
+  </p>
+  <p>
+    The user also has the option of adding technical indicators to the feature-space as they see fit. The interactive plot allows the user to visualize different technical indicators that can be chosen from a pre-specified list. These include common indicators such as moving averages, the relative strength index, and Bollinger Bands. 
+  </p>
+{% endblock %}

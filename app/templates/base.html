@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}{% endblock %} - Marketflow</title>
+  </head>
+
+  <body>
+    <header>
+      <h1>Marketflow</h1>
+    </header>
+
+    <main>
+      <nav>
+        {% block nav %}{% endblock %}
+      </nav>
+
+      <section class="content">
+        <header>
+          {% block header %}{% endblock %}
+        </header>
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+
+    <footer>
+      <hr>
+      <small>
+        &copy; UCLA, 2022
+      </small>
+    </footer>
+  </body>
+
+</html>
