@@ -1,12 +1,15 @@
 from flask import Flask, g, render_template, request
+
 import pickle
+# "No module named 'tensorflow_core.keras'" error?
+# https://github.com/tensorflow/tensorflow/issues/34607#issuecomment-617286830
+# import tensorflow as tf
+# from tensorflow import keras
 
 import pandas as pd
 import json
 import plotly
 import plotly.express as px
-
-# import data exploration module here
 
 
 app = Flask(__name__)
@@ -24,38 +27,36 @@ def test():
     if request.method == 'GET':
         return render_template('test.html')
     else:
-        try:
-            # assign the user's input to target
-            target = request.form['target']
+        # try:
+        # assign the user's input to target
+        target = request.form['target']
+
+        # assign model to the pre-trained model.pkl
+        model = pickle.load(open('model.pkl', 'rb'))
+
+        ##### perform prediction on target with the model
 
 
-            # assign model to the pre-trained model.pkl
-            model = pickle.load(open('model.pkl', 'rb'))
 
 
-            ##### perform prediction on target with the model
 
-            # prediction = model.predict(target)
-            # prediction = prediction.argmax(axis=1)
+        #####
 
-            #####
+        ##### create the plotly figure here. a random example is shown.
 
+        df = pd.DataFrame({
+            'Fruit': ['Apples', 'Oranges', 'Bananas', 'Apples', 'Oranges', 'Bananas'],
+            'Amount': [4, 1, 2, 2, 4, 5],
+            'City': ['SF', 'SF', 'SF', 'Montreal', 'Montreal', 'Montreal']
+        })
+        fig = px.bar(df, x='Fruit', y='Amount', color='City', barmode='group')
+        graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-            ##### create the plotly figure here. a random example is shown.
-
-            df = pd.DataFrame({
-                'Fruit': ['Apples', 'Oranges', 'Bananas', 'Apples', 'Oranges', 'Bananas'],
-                'Amount': [4, 1, 2, 2, 4, 5],
-                'City': ['SF', 'SF', 'SF', 'Montreal', 'Montreal', 'Montreal']
-            })
-            fig = px.bar(df, x='Fruit', y='Amount', color='City', barmode='group')
-            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-            
-            #####
+        #####
 
 
-            # once generated, return the prediction and figure here
-            return render_template('test.html', target=target, graphJSON=graphJSON)
+        # once generated, return the prediction and figure here
+        return render_template('test.html', target=target, graphJSON=graphJSON)
 
-        except: # if user's entry is not valid
-            return render_template('test.html', error=True)
+        # except: # if user's entry is not valid
+        #     return render_template('test.html', error=True)
