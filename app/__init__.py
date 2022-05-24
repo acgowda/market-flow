@@ -1,8 +1,6 @@
 from flask import Flask, g, render_template, request
 
 import pickle
-# "No module named 'tensorflow_core.keras'" error?
-# https://github.com/tensorflow/tensorflow/issues/34607#issuecomment-617286830
 from tensorflow import keras
 from tensorflow.keras import Sequential
 
@@ -32,21 +30,19 @@ def test():
     if request.method == 'GET':
         return render_template('test.html')
     else:
-        # try:
+
         # assign the user's input to target
         target = request.form['target']
+
         try:
             stock = yf.Ticker(target)
+            df = stock.history(period='6mo')
+            df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
         except:
-            stock = yf.Ticker('AAPL')
-        df = stock.history(period='6mo')
-        df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
+            return render_template('test.html', error=True)
 
         # assign model to the pre-trained model.pkl
-        try:
-            model = pickle.load(open('model.pkl', 'rb'))
-        except:
-            pass
+        model = pickle.load(open('model.pkl', 'rb'))
 
         ##### perform prediction on target with the model
 
@@ -142,6 +138,3 @@ def test():
 
         # once generated, return the prediction and figure here
         return render_template('test.html', target=target, graphJSON=graphJSON)
-
-        # except: # if user's entry is not valid
-        #     return render_template('test.html', error=True)
