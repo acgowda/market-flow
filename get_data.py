@@ -225,6 +225,10 @@ def get_input_data(tickers,indices = ["^GSPC","^VIX"],period = '5y'):
     return df_new
 
 def get_preds_data(ticker,indices = ["^GSPC","^VIX"],period = '2y'):
+    """
+    Get data which we will use our model to make predictions on
+    """
+
     df = yf.Ticker(ticker).history(period = period)
     index_df = get_index_data(indices,period)
     scaler = StandardScaler()
