@@ -44,7 +44,7 @@ def test():
             return render_template('test.html', error=True)
 
         # assign model to the pre-trained model.pkl
-        model = pickle.load(open('model.pkl', 'rb'))
+        model = pickle.load(open('model/model.pkl', 'rb'))
 
         ##### perform prediction on target with the model
 
