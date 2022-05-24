@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}About{% endblock %}
+
+{% block nav %}
+<ul>
+  <li><a href="{{ url_for('main') }}">Overview</a></li>
+  <li><a href="{{ url_for('test') }}">Test Our Product</a></li>
+  <li><a href="{{ url_for('about') }}" class="active">About the Creators</a></li>
+</ul>
+{% endblock %}
+
+{% block header %}<h2>About the Creators</h2>{% endblock %}
+
+<!-- CONTENT BEGINS HERE -->
+
+{% block content %}
+  <p>
+    Insert some content here.
+  </p>
+{% endblock %}
