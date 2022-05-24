@@ -1,19 +1,21 @@
 from flask import Flask, g, render_template, request
 
 import pickle
+import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras import Sequential
 
+import numpy as np
 import pandas as pd
+
 import json
 import plotly
-# import plotly.express as px
-
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 import yfinance as yf
 from ta.trend import MACD
+
+from get_data import get_preds_data
 
 app = Flask(__name__)
 
@@ -46,9 +48,20 @@ def test():
 
         ##### perform prediction on target with the model
 
+        past = get_preds_data(target)
+        today = past.iloc[-1:].dropna(1)
+        past.dropna(inplace=True)
+
+        X = past.drop(columns=['close'])
+        y = past['close']
+        
+        
+        loss, accuracy = model.evaluate(X,y)
+        accuracy = np.round(accuracy*100, 1)
 
 
-
+        d = {0: 'down', 1: 'up'}
+        pred = d[int(tf.math.argmax(model.predict(today), 1))]
 
         #####
 
@@ -137,4 +150,5 @@ def test():
 
 
         # once generated, return the prediction and figure here
-        return render_template('test.html', target=target, graphJSON=graphJSON)
+        return render_template('test.html', target=target, graphJSON=graphJSON, 
+                               accuracy=accuracy, pred=pred)

@@ -25,7 +25,8 @@
   {% endif %}
 
   {% if target %}
-    <p>The prediction for {{target}} is . Below is an interactive plot that displays the model's predictions on the most recent 60 days.</p>
+    <p>The model predicts that {{target}} will go {{pred}} tomorrow. On the past two years, the accuracy of this 
+      model's predictions on {{target}} is {{accuracy}}%. Below is an interactive plot of the stock.</p>
 
     <!-- boilerplate code for plotting graphJSON as plotly -->
     <div id='chart' class='chart'></div>

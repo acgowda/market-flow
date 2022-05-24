@@ -273,9 +273,9 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],period = '2y'):
     df = pd.concat([df,index_df], axis=1, ignore_index=False)
 
     df.drop(['^VIX-volume'],axis = 1,inplace = True)
-    print(df['close'].pct_change())
-    prediction_row = df.drop(['close'],axis = 1).iloc[len(df['close'])-1]
+    # print(df['close'].pct_change())
+    # prediction_row = df.drop(['close'],axis = 1).iloc[len(df['close'])-1]
 
     df_new = create_target(df)
 
-    return df_new,prediction_row
+    return df_new
