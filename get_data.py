@@ -16,10 +16,10 @@ def get_sp500_tickers():
     Also saves a pickle file of the tickers for future use
     """
     tickers = pd.read_html(
-      'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]['Symbol']
+    'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]['Symbol']
 
     with open('sp500_tickers','wb') as f:
-      pickle.dump(tickers,f)
+        pickle.dump(tickers,f)
     return tickers
 
 def remove_inf(df):
@@ -37,9 +37,9 @@ def remove_inf(df):
         n_ind = df[df[col]==-np.inf].index
         # replacing the positive and negative infinities
         if len(p_ind) > 0:
-          df[col].replace(np.inf,max(df[col].drop(p_ind,axis = 0)))
+            df[col].replace(np.inf,max(df[col].drop(p_ind,axis = 0)))
         if len(n_ind) > 0:
-          df[col].replace(-np.inf,min(df[col].drop(n_ind,axis = 0)))
+            df[col].replace(-np.inf,min(df[col].drop(n_ind,axis = 0)))
     return df
 
 def create_target(df):
@@ -53,6 +53,29 @@ def create_target(df):
     df['close'] = df['close'].apply(lambda x: 1 if x > 0 else 0)
     df['close'] = df['close'].shift(-1)
 
+    return df
+
+def create_close_MAs(df,MAs = [5,20,60,200],stock = True):
+    """
+    Create moving average columns in our
+    stock datasets
+    """
+    df = df.copy()
+    if stock:
+        for ma in MAs:
+            df[f'ma{ma}'] = df['close'].rolling(window=ma).mean()
+    else:
+        for ma in MAs:
+            df[f'ma{ma}'] = df['close'].rolling(window=ma).mean()
+    return df
+
+def scale_df(df):
+    # for normalising values in our indices' dataframe
+    scaler = StandardScaler()
+    cols = list(df.columns)
+    i_ind = df.index
+    df = pd.DataFrame(scaler.fit_transform(df),index = i_ind)
+    df.columns = cols
     return df
 
 def get_index_data(indices = ["^GSPC","^VIX"],period = '5y'):
@@ -89,13 +112,11 @@ def get_index_data(indices = ["^GSPC","^VIX"],period = '5y'):
         df[f'{ind}-ma60'] = df[f'{ind}-close'].rolling(window=60).mean()
         df[f'{ind}-ma200'] = df[f'{ind}-close'].rolling(window=200).mean()
 
-        # normalise values in our indices' dataframe & fill NAs
-        cols = list(df.columns)
-        i_ind = df.index
-        df = pd.DataFrame(scaler.fit_transform(df),index = i_ind)
-        df.columns = cols
-        df.fillna(method = 'ffill')
+        # df = scale_df(df)
 
+        # forward fill any NA values
+        df.fillna(method = 'ffill')
+        # remove inf values potentially created
         df = remove_inf(df)
 
         # add this data to our final df
@@ -105,14 +126,27 @@ def get_index_data(indices = ["^GSPC","^VIX"],period = '5y'):
           main_df = pd.concat([main_df,df],axis = 1)
     return main_df
 
-def compile_normalise_data(tickers,indices = ["^GSPC","^VIX"],period = '5y'):
+def scale_df2(df):
+    # normalise all columns except for the
+    # column containing our closing price
+
+    scaler = StandardScaler()
+    y = df['close']
+    X = df.drop(['close'],axis = 1)
+    cols = list(X.columns)
+    X = pd.DataFrame(scaler.fit_transform(X),index = y.index)
+    df = pd.concat([y,X],axis = 1)
+    df.columns = ['close'] + cols
+    return df
+
+def compile_data(tickers,indices = ["^GSPC","^VIX"],period = '5y'):
     """
     Compile all of the data
     we will use to train our model
     """
     main_df = pd.DataFrame() # our final dataframe
     count = 0 # keep track of progress
-    scaler = StandardScaler() # for scaling our data
+    #scaler = StandardScaler() # for scaling our data
 
     # get extra financial information we want to use
     # in making predictions
@@ -120,68 +154,58 @@ def compile_normalise_data(tickers,indices = ["^GSPC","^VIX"],period = '5y'):
 
     for ticker in tickers:
         try:
-          # yahoo finance doesn't like '.' full stops, and prefers '-' dashes
-          ticker = ticker.replace('.', '-')
-          # read in a specific ticker's historical financial information
-          df = yf.Ticker(ticker).history(period = period)
-          # drop columns we won't be using from that dataframe
-          df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
+            # yahoo finance doesn't like '.' full stops, and prefers '-' dashes
+            ticker = ticker.replace('.', '-')
+            # read in a specific ticker's historical financial information
+            df = yf.Ticker(ticker).history(period = period)
+            # drop columns we won't be using from that dataframe
+            df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
 
-          # make column names lower cased, because it's easier to type
-          for col in df.columns:
-            df.rename(columns = {col:col.lower()},inplace = True)
+            # make column names lower cased, because it's easier to type
+            for col in df.columns:
+                df.rename(columns = {col:col.lower()},inplace = True)
 
-          # add a few rolling window columns on our closing price
-          df['ma5'] = df['close'].rolling(window=5).mean()
-          df['ma20'] = df['close'].rolling(window=20).mean()
-          df['ma60'] = df['close'].rolling(window=60).mean()
-          df['ma200'] = df['close'].rolling(window=200).mean()
+                # add a few rolling window columns on our closing price
+                df = create_close_MAs(df)
 
-          # normalise all columns except for the
-          # column containing our closing price
-          y = df['close']
-          X = df.drop(['close'],axis = 1)
-          cols = list(X.columns)
-          X = pd.DataFrame(scaler.fit_transform(X),index = y.index)
-          df = pd.concat([y,X],axis = 1)
-          df.columns = ['close'] + cols
+                # df = scale_df(df)
 
-          # fill foward missing values just in case any came up
-          df.fillna(method = 'ffill')
+                # fill foward missing values just in case any came up
+                df.fillna(method = 'ffill')
 
-          df = remove_inf(df) # remove inf values
+                df = remove_inf(df) # remove inf values
 
-          # get day of week; 0 = Monday, ..., so on so forth
-          # as a column
-          df['day'] = list(pd.Series(df.index).apply(lambda x: str(x.weekday())))
+                # get day of week; 0 = Monday, ..., so on so forth
+                # as a column
+                df['day'] = list(pd.Series(df.index).apply(lambda x: str(x.weekday())))
 
-          # get month of year as a column
-          df['month'] = list(pd.Series(df.index).apply(lambda x: str(x.month)))
+                # get month of year as a column
+                df['month'] = list(pd.Series(df.index).apply(lambda x: str(x.month)))
 
-          # convert categorical data to dummy variables
-          df = pd.get_dummies(df)
+                # convert categorical data to dummy variables
+                df = pd.get_dummies(df)
 
-          # merge the extra financial info along the column-axis
-          df = pd.concat([df,index_df], axis=1, ignore_index=False)
+                # merge the extra financial info along the column-axis
+                df = pd.concat([df,index_df], axis=1, ignore_index=False)
 
-          # make our target variable
-          df = create_target(df)
+                # make our target variable
+                df = create_target(df)
 
-          # remove NaNs
-          df.dropna(inplace = True)
+                # remove NaNs
+                df.dropna(inplace = True)
 
-          # add this data to our final df
-          if main_df.empty:
-            main_df = df
-          else:
-            main_df = pd.concat([main_df,df],axis = 0)
+                # add this data to our final df
+                if main_df.empty:
+                    main_df = df
+                    else:
+                    main_df = pd.concat([main_df,df],axis = 0)
 
-          # progress counting
-          count +=1 # increment for every stock addded
-          if count % 50 == 0: # will let us know progress for every 50 stocks added
-              print(f'Progress: {count}/{len(tickers)}')
+                # progress counting
+                count +=1 # increment for every stock addded
+                if count % 50 == 0: # will let us know progress for every 50 stocks added
+                    print(f'Progress: {count}/{len(tickers)}')
         except:
-          continue
+            continue
     # drop any NaNs
     main_df = main_df.dropna(axis = 0)
 
@@ -206,7 +230,7 @@ def get_input_data(tickers,indices = ["^GSPC","^VIX"],period = '5y'):
     start = '2017-01-01'
     end = '2022-05-12'
     """
-    df = compile_normalise_data(tickers,indices = ["^GSPC","^VIX"],period = '5y')
+    df = compile_data(tickers,indices = ["^GSPC","^VIX"],period = '5y')
 
     # obtain whichever is lower: the number of buy signals (1)
     # or the number of sell signals (0)
@@ -237,7 +261,7 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],period = '2y'):
     df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
     # make column names lower cased, because it's easier to type
     for col in df.columns:
-      df.rename(columns = {col:col.lower()},inplace = True)
+        df.rename(columns = {col:col.lower()},inplace = True)
 
     # add a few rolling window columns on our closing price
     df['ma5'] = df['close'].rolling(window=5).mean()
@@ -247,12 +271,7 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],period = '2y'):
 
     # normalise all columns except for the
     # column containing our closing price
-    y = df['close']
-    X = df.drop(['close'],axis = 1)
-    cols = list(X.columns)
-    X = pd.DataFrame(scaler.fit_transform(X),index = y.index)
-    df = pd.concat([y,X],axis = 1)
-    df.columns = ['close'] + cols
+    #df = scale_df2(df)
 
     # fill foward missing values just in case any came up
     df.fillna(method = 'ffill')
