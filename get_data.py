@@ -197,7 +197,7 @@ def compile_data(tickers,indices = ["^GSPC","^VIX"],period = '5y'):
                 # add this data to our final df
                 if main_df.empty:
                     main_df = df
-                    else:
+                else:
                     main_df = pd.concat([main_df,df],axis = 0)
 
                 # progress counting

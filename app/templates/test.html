@@ -16,8 +16,9 @@
 {% block content %}
   <p>Please specify a stock to predict.</p>
   <form method="post">
-      <input type="text" name="target" id="textbox">
-      <input type="submit" value="Submit">
+      {{ tform.csrf_token }}
+      {{ tform.target }}
+      {{ tform.submit }}
   </form>
 
   {% if error %}
@@ -26,7 +27,27 @@
 
   {% if target %}
     <p>The model predicts that {{target}} will go {{pred}} tomorrow. On the past two years, the accuracy of this 
-      model's predictions on {{target}} is {{accuracy}}%. Below is an interactive plot of the stock.</p>
+      model's predictions on {{target}} is {{accuracy}}%.</p>
+
+    <p>Below is an interactive plot of the stock. You can use the following checkboxes to add various indicators to the plot.</p>
+
+    <form method="post">
+      {{ pform.csrf_token }}
+      {{ pform.MA5_bool.label }}
+      {{ pform.MA5_bool }}
+      &nbsp;&nbsp;
+      {{ pform.MA20_bool.label }}
+      {{ pform.MA20_bool }}
+      &nbsp;&nbsp;
+      {{ pform.volume_bool.label }}
+      {{ pform.volume_bool }}
+      &nbsp;&nbsp;
+      {{ pform.MACD_bool.label }}
+      {{ pform.MACD_bool }}
+      &nbsp;&nbsp;
+      {{ pform.render }}
+      <!-- <input type="submit" value="Render"> -->
+    </form>
 
     <!-- boilerplate code for plotting graphJSON as plotly -->
     <div id='chart' class='chart'></div>
@@ -35,5 +56,6 @@
       var graphs = {{graphJSON | safe}};
       Plotly.plot('chart',graphs,{});
     </script>
+
   {% endif %}
 {% endblock %}
