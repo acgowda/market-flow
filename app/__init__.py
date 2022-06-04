@@ -38,7 +38,7 @@ def test():
 
         try:
             stock = yf.Ticker(target)
-            df = stock.history(period='6mo')
+            df = stock.history(period='7mo')
             df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
         except:
             return render_template('test.html', error=True)
@@ -85,6 +85,13 @@ def test():
                     window_slow=26,
                     window_fast=12, 
                     window_sign=9)
+        print(macd)
+
+        df['macd'] = macd.macd()
+        df['macd_diff'] = macd.macd_diff()
+        df['macd_signal'] = macd.macd_signal()
+
+        df = df.iloc[35:]
 
         fig = make_subplots(rows=3, cols=1, shared_xaxes=True,
                             vertical_spacing=0.01, 
@@ -117,19 +124,19 @@ def test():
 
         # Plot MACD trace on 3rd row
         colors = ['green' if val >= 0 
-                else 'red' for val in macd.macd_diff()]
+                else 'red' for val in df['macd_diff']]
         fig.add_trace(go.Bar(x=df.index, 
-                            y=macd.macd_diff(),
+                            y=df['macd_diff'],
                             marker_color=colors,
                             name = 'Difference'
                             ), row=3, col=1)
         fig.add_trace(go.Scatter(x=df.index,
-                                y=macd.macd(),
+                                y=df['macd'],
                                 line=dict(color='orange', width=2),
                                 name = 'MACD'
                                 ), row=3, col=1)
         fig.add_trace(go.Scatter(x=df.index,
-                                y=macd.macd_signal(),
+                                y=df['macd_signal'],
                                 line=dict(color='blue', width=1),
                                 name = 'Signal Line'
                                 ), row=3, col=1)
