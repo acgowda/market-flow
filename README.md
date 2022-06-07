@@ -1,7 +1,7 @@
 # marketflow: Stock Market Predictions
 Group members: Jonathn Chang, Ananda Gowda, Shannan Liu
 
-In this project, we design a ANN model that can be used to make stock predictions on a specified target. 
+In this project, we design an Articial Neural Network (ANN) model that can be used to make stock predictions on a specified target. 
 
 We extract data from the yfinance API and perform data cleaning, encoding, and normalization in the `get_data.py` file. 
 
