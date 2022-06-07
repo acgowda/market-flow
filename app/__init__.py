@@ -1,8 +1,6 @@
 from flask import Flask, g, render_template, request
 
-import pickle
 import tensorflow as tf
-from tensorflow import keras
 
 import numpy as np
 import pandas as pd
@@ -39,30 +37,33 @@ def test():
 
         try:
             stock = yf.Ticker(target)
-            df = stock.history(period='7mo',interval = resolution)
+            df = stock.history(period='7mo')
             df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
         except:
             return render_template('test.html', error=True)
 
-        # assign model to the pre-trained model.pkl
-        model = pickle.load(open('model/model.pkl', 'rb'))
+        # assign model to the pre-trained model
+        model = tf.keras.models.load_model('model/model_week')
 
         ##### perform prediction on target with the model
         period = '2y'
         indices = ['^GSPC','^VIX','^IXIC','^DJI','^HSI','^FTSE','^FCHI','GC=F','CL=F']
-        past = get_preds_data(target,indices = indices,
+        test = get_preds_data(target,indices = indices,
                               period = period,
                               resolution = resolution,
                               MAs = [4,21,52])
         
-        today = past.iloc[-1:].dropna(1)
-        past.dropna(inplace=True)
 
-        X = past.drop(columns=['close','target'],axis = 1)
-        y = past['close']
+        high_change_cols = ['volume', 'GC=F-volume']
+        test = test.drop(high_change_cols, axis = 1)
+
+        today = test.iloc[-1:].dropna(1).drop(['close'], axis=1)
+        test.dropna(inplace=True)
+
+        X = test.drop(columns=['close'],axis = 1)
+        y = test['close']
         
-        
-        loss, accuracy = model.evaluate(X,y)
+        _, accuracy = model.evaluate(X,y)
         accuracy = np.round(accuracy*100, 1)
 
 
@@ -87,22 +88,23 @@ def test():
         df['MA5_pct'] = df['Close'].rolling(window=5).mean().pct_change()
 
         # MACD
-        macd = MACD(close=df['Close'], 
+        macd = MACD(close=df['Close'],
                     window_slow=26,
                     window_fast=12, 
                     window_sign=9)
-        print(macd)
 
         df['macd'] = macd.macd()
         df['macd_diff'] = macd.macd_diff()
         df['macd_signal'] = macd.macd_signal()
 
-        df = df.iloc[35:]
 
         fig = make_subplots(rows=3, cols=1, shared_xaxes=True,
                             vertical_spacing=0.01, 
                             row_heights=[0.7,0.1,0.2])
 
+
+        df = df.iloc[33:]
+        
         # Plot OHLC on 1st subplot (using the codes from before)
         fig.add_trace(go.Candlestick(x=df.index,
                                     open=df['Open'],
