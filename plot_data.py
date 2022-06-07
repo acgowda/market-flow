@@ -94,4 +94,5 @@ def plot_ticker(df):
     return fig
 
 def plot_returns(returns,predictions):
+        df = pd.dataframe(returns,predictions)
         
