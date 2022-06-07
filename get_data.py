@@ -330,6 +330,7 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
 
     # merge the extra financial info along the column-axis
     df = pd.concat([df,index_df], axis=1, ignore_index=False)
+    df['returns'] = df['close']
     df['close'] = df['close'].apply(lambda x: 1 if x > 0 else 0)
     df.dropna(inplace=True)
 
