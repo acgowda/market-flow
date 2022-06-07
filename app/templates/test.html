@@ -32,7 +32,14 @@
     <div id='chart' class='chart'></div>
     <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
     <script type='text/javascript'>
-      var graphs = {{graphJSON | safe}};
+      var graphs = {{tickerJSON | safe}};
+      Plotly.plot('chart',graphs,{});
+    </script>
+
+    <div id='chart' class='chart'></div>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+    <script type='text/javascript'>
+      var graphs = {{returnsJSON | safe}};
       Plotly.plot('chart',graphs,{});
     </script>
   {% endif %}

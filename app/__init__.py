@@ -10,8 +10,7 @@ import plotly
 import yfinance as yf
 
 from get_data import get_preds_data
-from plot_data import plot_ticker
-import pandas as pd
+from plot_data import plot_ticker, plot_returns
 
 app = Flask(__name__)
 
@@ -68,16 +67,16 @@ def test():
         preds = model.predict(X)
         accuracy = np.round(accuracy*100, 1)
 
-        plot_returns(returns,preds)
-
+        plot_returns(returns, preds)
 
         d = {0: 'down', 1: 'up'}
         pred = d[int(tf.math.argmax(model.predict(today), 1))]
         fig = plot_ticker(df)
 
-        graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        tickerJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        returnsJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
 
         # once generated, return the prediction and figure here
-        return render_template('test.html', target=target, graphJSON=graphJSON, 
-                               accuracy=accuracy, pred=pred)
+        return render_template('test.html', target=target, tickerJSON=tickerJSON, 
+                               returnsJSON=returnsJSON, accuracy=accuracy, pred=pred)
