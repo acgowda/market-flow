@@ -35,10 +35,11 @@ def test():
 
         # assign the user's input to target
         target = request.form['target']
+        resolution = '1wk'
 
         try:
             stock = yf.Ticker(target)
-            df = stock.history(period='7mo')
+            df = stock.history(period='7mo',interval = resolution)
             df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
         except:
             return render_template('test.html', error=True)
@@ -47,12 +48,17 @@ def test():
         model = pickle.load(open('model/model.pkl', 'rb'))
 
         ##### perform prediction on target with the model
-
-        past = get_preds_data(target)
+        period = '2y'
+        indices = ['^GSPC','^VIX','^IXIC','^DJI','^HSI','^FTSE','^FCHI','GC=F','CL=F']
+        past = get_preds_data(target,indices = indices,
+                              period = period,
+                              resolution = resolution,
+                              MAs = [4,21,52])
+        
         today = past.iloc[-1:].dropna(1)
         past.dropna(inplace=True)
 
-        X = past.drop(columns=['close'])
+        X = past.drop(columns=['close','target'],axis = 1)
         y = past['close']
         
         
