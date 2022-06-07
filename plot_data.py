@@ -92,3 +92,6 @@ def plot_ticker(df):
     fig.update_yaxes(title_text="MACD", row=3, col=1)
 
     return fig
+
+def plot_returns(returns,predictions):
+        

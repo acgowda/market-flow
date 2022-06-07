@@ -11,6 +11,7 @@ import yfinance as yf
 
 from get_data import get_preds_data
 from plot_data import plot_ticker
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -51,7 +52,8 @@ def test():
                               MAs = [4,21,52])
 
         test = test.iloc[52:]
-        
+
+        returns = test['returns']
 
         high_change_cols = ['volume', 'GC=F-volume', 'returns']
         test = test.drop(high_change_cols, axis = 1)
@@ -63,12 +65,14 @@ def test():
         y = test['close']
         
         _, accuracy = model.evaluate(X,y)
+        preds = model.predict(X)
         accuracy = np.round(accuracy*100, 1)
+
+        plot_returns(returns,preds)
 
 
         d = {0: 'down', 1: 'up'}
         pred = d[int(tf.math.argmax(model.predict(today), 1))]
-
         fig = plot_ticker(df)
 
         graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
