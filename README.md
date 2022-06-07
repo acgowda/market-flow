@@ -3,7 +3,7 @@ Group members: Jonathn Chang, Ananda Gowda, Shannan Liu
 
 In this project, we design a DNN model that can be used to make stock predictions on a specified target. 
 
-We extract data from the yfinance API and perform data cleaning/encoding/normalization in the `get_data.py` file. 
+We extract data from the yfinance API and perform data cleaning, encoding, and normalization in the `get_data.py` file. 
 
 We train our model with a feed-forward DNN using Keras and Tensorflow. This model is built and trained with Colab, in the `model_testing.ipynb` file.
 
