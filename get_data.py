@@ -296,20 +296,22 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
     # read in a specific ticker's historical financial information
     df = yf.Ticker(ticker).history(period = period,interval = resolution)
     index_df = get_index_data(indices,period,resolution,MAs)
-    df['target'] = df['close']
 
     # drop columns we won't be using from that dataframe
     df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
     # make column names lower cased, because it's easier to type
     for col in df.columns:
         df.rename(columns = {col:col.lower()},inplace = True)
+    
+    y = df['close']
 
+    # drop NAs for jic
+    df.dropna(inplace = True)
+    
     # add a few rolling window columns on our closing price
     df = create_close_MAs(df,MAs)
-
-    # normalise all columns except for the
-    # column containing our closing price
-    #df = scale_df2(df)
+    
+    # normalise all columns as percentages
     df = df.pct_change()
 
     # fill foward missing values just in case any came up
@@ -330,7 +332,8 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
 
     # merge the extra financial info along the column-axis
     df = pd.concat([df,index_df], axis=1, ignore_index=False)
-    df_new = create_target(df)
-    df_new.dropna(inplace=True)
+    df['close'] = df['close'].apply(lambda x: 1 if x > 0 else 0)
+    df.dropna(inplace=True)
+    df['close_price'] = y
 
-    return df_new
+    return df
