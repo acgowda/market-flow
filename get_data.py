@@ -302,8 +302,6 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
     # make column names lower cased, because it's easier to type
     for col in df.columns:
         df.rename(columns = {col:col.lower()},inplace = True)
-    
-    y = df['close']
 
     # drop NAs for jic
     df.dropna(inplace = True)
@@ -334,6 +332,5 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
     df = pd.concat([df,index_df], axis=1, ignore_index=False)
     df['close'] = df['close'].apply(lambda x: 1 if x > 0 else 0)
     df.dropna(inplace=True)
-    df['close_price'] = y
 
     return df
