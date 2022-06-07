@@ -237,9 +237,6 @@ def compile_data(tickers,indices = ["^GSPC","^VIX"],
     # if the data is daily; add it to dataframe as a column
     if resolution == '1d':
       main_df['day'] = list(pd.Series(main_df.index).apply(lambda x: str(x.weekday())))
-    
-    if resolution == '1wk':
-      main_df['week'] = list(pd.to_datetime(main_df.index).isocalendar().week.astype(str))
 
     # get month of year as a column
     main_df['month'] = list(pd.Series(main_df.index).apply(lambda x: str(x.month)))
@@ -323,10 +320,6 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
     # as a column
     if resolution == '1d':
       df['day'] = list(pd.Series(df.index).apply(lambda x: str(x.weekday())))
-
-    # get week of yr
-    if resolution == '1wk':
-      df['week'] = list(pd.to_datetime(df.index).isocalendar().week.astype(str))
 
     # get month of year as a column
     df['month'] = list(pd.Series(df.index).apply(lambda x: str(x.month)))
