@@ -67,7 +67,7 @@ def test():
         preds = model.predict(X)
         accuracy = np.round(accuracy*100, 1)
 
-        plot_returns(returns, preds)
+        plot_returns(returns, preds, y)
 
         d = {0: 'down', 1: 'up'}
         pred = d[int(tf.math.argmax(model.predict(today), 1))]
