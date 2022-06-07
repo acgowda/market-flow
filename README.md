@@ -7,7 +7,7 @@ We extract data from the yfinance API and perform data cleaning, encoding, and n
 
 We train our model with a feed-forward DNN using Keras and Tensorflow. This model is built and trained with Colab, in the `model_testing.ipynb` file.
 
-The model is presented in a web app built using Flask. This app allows users to input a desired target, and outputs a prediction for the next day, as well as an interactive plot that displays the model's performacne on the most recent 60 days of data. The details of this web app can be viewed in the `app` folder. To run the web app locally, clone the repo and run `flask run` while in the folder.
+The model is presented in a web app built using Flask. This app allows users to input a desired target, and outputs a prediction for the next day, as well as an interactive plot that displays the model's performance on the most recent 6 months of data. The details of this web app can be viewed in the `app` folder. To run the web app locally, clone the repo and run `flask run` while in the folder.
 
 Finally, we deployed our app onto the web using Heroku. See [https://market-flow.herokuapp.com](https://market-flow.herokuapp.com)
 
