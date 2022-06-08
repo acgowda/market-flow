@@ -319,6 +319,8 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
 
     df = pd.concat([df,index_df], axis=1, ignore_index=False)
 
+    df['returns'] = df['close']
+
     # merge the extra financial info along the column-axis
     df = create_target(df)
 
