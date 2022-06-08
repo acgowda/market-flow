@@ -5,11 +5,11 @@ Group members: Jonathn Chang, Ananda Gowda, Shannan Liu
 
 In this project, we designed and trained an Artificial Neural Network (ANN) that can be used to make predictions on a specified stock ticker. 
 
-We extract live data and perform data cleaning, encoding, and normalization in the `get_data.py` file. 
+We extracted live data and performed data cleaning, encoding, and normalization.
 
-We trained our model Tensorflow and Keras on Google Colab using data from Yahoo Finance on the weekly price changes of all the stocks in the S&P 500. The code can be viewed in `model/model_testing.ipynb` file.
+Then, we trained our model using Tensorflow and Keras on Google Colab and data from Yahoo Finance on the weekly price changes of all the stocks in the S&P 500.
 
-The model can be accessed via our web app built using Flask. This app allows users to input a desired stock, and outputs a prediction for the next week, as well as an interactive plot that displays the model's performance on the most recent 6 months of data. Another plot displays the model's net profit over two years when using it to make trades and compares it to the actual returns. The details of this web app can be viewed in the `app` folder. To run the web app locally, clone the repo and run `flask run` while in the folder.
+We also displayed our model on a web app built with Flask. This app allows users to input a desired stock, and outputs a prediction for the next week, as well as an interactive plot that displays the model's performance on the most recent 6 months of data. Another plot displays the model's net profit over two years when using it to make trades and compares it to the actual returns. The details of this web app can be viewed in the `app` folder. To run the web app locally, clone the repo and run `flask run`.
 
 Finally, we deployed our app onto the web using Heroku. See [https://market-flow.herokuapp.com](https://market-flow.herokuapp.com)
 
@@ -24,7 +24,7 @@ Our first step is to perform data processing, which is done in the `get_data.py`
 
 ## Model Training
 
-Now, we build and train our model. We read in the .csv file created in the previous section. Loading in the DataFrame gives stock data with the following columns:
+Now, we build and train our model. You can view the details in `model/model_testing.ipynb`. Reading in the .csv file, the dataframe gives stock data with the following columns:
 ```python
 ['Date', 'open', 'high', 'low', 'close', 'volume', 'ma4', 'ma21', 'ma52',
  '^GSPC-close', '^GSPC-volume', '^GSPC-ma4', '^GSPC-ma21', '^GSPC-ma52',
