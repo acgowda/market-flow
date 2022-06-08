@@ -15,12 +15,17 @@ Finally, we deployed our app onto the web using Heroku. See [https://market-flow
 
 
 ## Data Processing
-Our first step is to perform data processing, which is done in the `get_data.py` file. 
+The first step of our project involved performed data collection and processing. This is all done within the `get_data.py` file. 
+
+To begin, we built a function called `get_sp500_tickers()` to get a list of ticker symbols for stocks in the S&P 500 index. We then feed this list of tickers into a function called `get_input_data()`, which relies on several functions nested within each other to (1) obtain our data from yahoo finance; (2) merge different datasets together to build our feature space; (3) normalize the data by converting columns from raw price or volume data to percentage change data; (4) create moving average features; (5) deal with NaN and infinite vlaues; (6) create our target variable; (7) create temporal indicator variables; (8) shuffle our data appropriately; and (9) ensure that our binary classification task is balanced (i.e. target feature contains an equal number of buy and sell signals).
+
+We also implemented a certain level of flexibility into the `get_input_data()` function, allowing the user to specify whether they want weekly or daily observations in their training set; the number of moving average columns they want to add to their feature space; the index and commodity pricing and volumne information that they wanted to add to their feature-space; and the period over which they wanted their information to come from.
+
+With this function, we were able to train a successful ANN.
+
+Meanwhile, we created a separate function called `get_preds_data()` to obtain our prediction data (i.e. the data we used to generate model prediction and returns statistics on our website). This function has a lot of similarities with `get_input_data()`. However, some key differences are that `get_preds_data()` only accepts 1 ticker and that the data is no longer shuffled because we want to preserve the order of our series when plotting it (note that this doesn't imply that the order matters for making predictions). 
 
 **describe get_data.py here; at least one code snippet and one figure**
-
-
-
 
 ## Model Training
 
@@ -56,8 +61,6 @@ and train it over 30 epochs. The training history is shown below.
 ![training_history.png](/images/training_history.png)
 
 We save the model to be used in the web app using `model.save()`.
-
-
 
 ## Flask App
 Finally, we deployed our code onto a web app via Flask. The `app` folder contains the `__init__.py` file which initializes the web app, a `templates` folder containing html files that are rendered by Flask, and a `static` folder containing styling and a favicon for the web app.
