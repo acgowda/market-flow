@@ -5,7 +5,7 @@ Group members: Jonathn Chang, Ananda Gowda, Shannan Liu
 
 In this project, we designed and trained an Artificial Neural Network (ANN) that can be used to make predictions on a specified stock ticker. 
 
-We extract live data from  and perform data cleaning, encoding, and normalization in the `get_data.py` file. 
+We extract live data and perform data cleaning, encoding, and normalization in the `get_data.py` file. 
 
 We trained our model Tensorflow and Keras on Google Colab using data from Yahoo Finance on the weekly price changes of all the stocks in the S&P 500. The code can be viewed in `model/model_testing.ipynb` file.
 
@@ -13,12 +13,19 @@ The model can be accessed via our web app built using Flask. This app allows use
 
 Finally, we deployed our app onto the web using Heroku. See [https://market-flow.herokuapp.com](https://market-flow.herokuapp.com)
 
+
 ## Data Processing
+Our first step is to perform data processing, which is done in the `get_data.py` file. 
+
+# describe get_data.py here; at least one code snippet and one figure
 
 
 
 
 ## Model Training
+
+Now, we build and train our model. 
+
 
 
 
@@ -61,6 +68,9 @@ and to insert them into the html:
   Plotly.plot('chart',graphs,{});
 </script>
 ```
+
+Here is a screenshot of the `test.html` page after a user makes a submission:
+![test_page.jpeg](/images/HW-0_output.png)
 
 
 
