@@ -70,7 +70,7 @@ and to insert them into the html:
 ```
 
 Here is a screenshot of the `test.html` page after a user makes a submission:
-![test_page.jpeg](/images/HW-0_output.png)
+![test_page.jpeg](/images/test_page.jpeg)
 
 
 
