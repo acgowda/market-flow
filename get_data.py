@@ -297,12 +297,8 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
     df = yf.Ticker(ticker).history(period = period,interval = resolution)
     index_df = get_index_data(indices,period,resolution,MAs)
 
-    try:
-        # drop columns we won't be using from that dataframe
-        df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
-    except: 
-        pass
-
+    # drop columns we won't be using from that dataframe
+    df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
     # make column names lower cased, because it's easier to type
     for col in df.columns:
         df.rename(columns = {col:col.lower()},inplace = True)
@@ -334,10 +330,7 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
 
     # merge the extra financial info along the column-axis
     df = pd.concat([df,index_df], axis=1, ignore_index=False)
-    last_period = df.iloc[-1:].dropna(1).drop(['close'], axis=1)
-
-    df['returns'] = df['close']
     df = create_target(df)
     df.dropna(inplace=True)
 
-    return df,last_period
+    return df
