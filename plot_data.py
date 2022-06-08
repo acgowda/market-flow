@@ -66,8 +66,7 @@ def plot_ticker(df, target):
                         ), row=2, col=1)
 
     # Plot MACD trace on 3rd row
-    colors = ['green' if val >= 0 
-            else 'red' for val in df['macd_diff']]
+    colors = ['green' if val >= 0 else 'red' for val in df['macd_diff']]
     fig.add_trace(go.Bar(x=df.index, 
                         y=df['macd_diff'],
                         marker_color=colors,
@@ -85,10 +84,10 @@ def plot_ticker(df, target):
                             ), row=3, col=1)
 
     fig.update_layout(title = f'{target} Price',
-                    height=500, width=750, 
-                    showlegend=False, 
-                    xaxis_rangeslider_visible=False,
-                    xaxis_rangebreaks=[dict(values=dt_breaks)])
+                      height=500, width=750, 
+                      showlegend=False, 
+                      xaxis_rangeslider_visible=False,
+                      xaxis_rangebreaks=[dict(values=dt_breaks)])
 
     # update y-axis label
     fig.update_yaxes(title_text="Price", row=1, col=1)
@@ -97,53 +96,44 @@ def plot_ticker(df, target):
 
     return fig
 
-def plot_returns(returns, predictions, y, target):
+def plot_returns(returns, predictions, target):
         
-    # dataframe
-        yhat = np.argmax(predictions, 1)
-        df = pd.DataFrame(returns)
-        print(np.mean(yhat))
+    yhat = np.argmax(predictions, 1)
+    df = pd.DataFrame(returns)
 
-        df['strategy'] = np.where(y == yhat, 1, -1)*df['returns']
+    df['strategy'] = (np.array([1 if y == 1 else -1 for y in yhat])*df['returns'] + 1).cumprod() - 1
+    # df['strategy'] =  ((yhat - 0.25) * df['returns'] + 1).cumprod() - 1
+    df['returns'] =  (df['returns'] + 1).cumprod() - 1
 
-        df['returns_minus_strategy'] = df['returns'] - df['strategy']
-        
-        #datetime stuff
-        dt_all = pd.date_range(start=df.index[0],end=df.index[-1])
-        # retrieve the dates that ARE in the original datset
-        dt_obs = [d.strftime("%Y-%m-%d") for d in pd.to_datetime(df.index)]
-        # define dates with missing values
-        dt_breaks = [d for d in dt_all.strftime("%Y-%m-%d").tolist() if not d in dt_obs]
+    df['returns_minus_strategy'] = df['strategy'] - df['returns']
+    
+    #datetime stuff
+    dt_all = pd.date_range(start=df.index[0],end=df.index[-1])
+    # retrieve the dates that ARE in the original datset
+    dt_obs = [d.strftime("%Y-%m-%d") for d in pd.to_datetime(df.index)]
+    # define dates with missing values
+    dt_breaks = [d for d in dt_all.strftime("%Y-%m-%d").tolist() if not d in dt_obs]
 
-        fig = make_subplots(rows=2, cols=1, shared_xaxes=True,
-                        vertical_spacing=0.01, 
-                        row_heights=[0.75,0.25])
-        
-        fig.add_trace(go.Scatter(x=df.index, 
-                        y=(df['strategy'] + 1).cumprod(), 
-                        line=dict(color='green', width=2), 
-                        name='Strategy'),row=1, col=1)
+    fig = make_subplots(rows=1, cols=1, shared_xaxes=True,
+                    vertical_spacing=0.01)
+    
+    fig.add_trace(go.Scatter(x=df.index, 
+                    y=df['strategy'], 
+                    line=dict(color='blue', width=2), 
+                    name='Model Strategy'),row=1, col=1)
 
-        fig.add_trace(go.Scatter(x=df.index, 
-                        y=(df['returns'] + 1).cumprod(), 
-                        line=dict(color='blue', width=2), 
-                        name='Returns'),row=1, col=1)
+    fig.add_trace(go.Scatter(x=df.index, 
+                    y=df['returns'], 
+                    line=dict(color='orange', width=2), 
+                    name='Long Strategy'),row=1, col=1)
 
+    fig.update_layout(title = f'Model Strategy vs. {target} Actual Returns',
+                    height=500, width=750, 
+                    showlegend=False, 
+                    xaxis_rangeslider_visible=False,
+                    xaxis_rangebreaks=[dict(values=dt_breaks)])
 
-        colors = ['green' if val >= 0 else 'red' for val in df['returns_minus_strategy']]
-        fig.add_trace(go.Bar(x=df.index, 
-                y=df['returns_minus_strategy'].cumsum(),
-                marker_color=colors,
-                name = 'Spread'
-                ), row=2, col=1)
+    fig.update_yaxes(title_text="Returns", row=1, col=1)
+    fig.update_yaxes(title_text="Difference", row=2, col=1)
 
-        fig.update_layout(title = f'Model Strategy vs. {target} Actual Returns',
-                        height=500, width=750, 
-                        showlegend=False, 
-                        xaxis_rangeslider_visible=False,
-                        xaxis_rangebreaks=[dict(values=dt_breaks)])
-
-        fig.update_yaxes(title_text="Returns", row=1, col=1)
-        fig.update_yaxes(title_text="Difference", row=2, col=1)
-
-        return fig 
+    return fig 

@@ -45,20 +45,18 @@ def test():
         ##### perform prediction on target with the model
         period = '3y'
         indices = ['^GSPC','^VIX','^IXIC','^DJI','^HSI','^FTSE','^FCHI','GC=F','CL=F']
-        test,today = get_preds_data(target,indices = indices,
-                              period = period,
-                              resolution = resolution,
-                              MAs = [4,21,52])
+        test = get_preds_data(target,indices = indices,
+                                     period = period,
+                                     resolution = resolution,
+                                     MAs = [4,21,52])
 
-        test = test.iloc[52:]
-
-        returns = test['returns']
+        returns = test['returns'][:-1]
 
         high_change_cols = ['volume', 'GC=F-volume', 'returns']
         test = test.drop(high_change_cols, axis = 1)
+        today = test.iloc[-1:].drop('close', axis=1)
 
-        #today = test.iloc[-1:].dropna(1).drop(['close'], axis=1)
-        test.dropna(inplace=True)
+        test = test.iloc[:-1]
 
         X = test.drop(columns=['close'],axis = 1)
         y = test['close']
@@ -72,10 +70,11 @@ def test():
         
          
         tickerJSON = json.dumps(plot_ticker(df, target), cls=plotly.utils.PlotlyJSONEncoder)
-
-        returnsJSON = json.dumps(plot_returns(returns, preds, y, target), cls=plotly.utils.PlotlyJSONEncoder)
+        returnsJSON = json.dumps(plot_returns(returns, preds, target), cls=plotly.utils.PlotlyJSONEncoder)
 
 
         # once generated, return the prediction and figure here
-        return render_template('test.html', target=target, tickerJSON=tickerJSON, 
-                               returnsJSON=returnsJSON, accuracy=accuracy, pred=pred)
+        return render_template('test.html', target=target, 
+                               tickerJSON=tickerJSON, 
+                               returnsJSON=returnsJSON, 
+                               accuracy=accuracy, pred=pred)
