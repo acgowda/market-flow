@@ -67,14 +67,13 @@ def test():
         preds = model.predict(X)
         accuracy = np.round(accuracy*100, 1)
 
-        plot_returns(returns, preds, y)
-
         d = {0: 'down', 1: 'up'}
         pred = d[int(tf.math.argmax(model.predict(today), 1))]
-        fig = plot_ticker(df)
+        
+         
+        tickerJSON = json.dumps(plot_ticker(df, target), cls=plotly.utils.PlotlyJSONEncoder)
 
-        tickerJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-        returnsJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        returnsJSON = json.dumps(plot_returns(returns, preds, y, target), cls=plotly.utils.PlotlyJSONEncoder)
 
 
         # once generated, return the prediction and figure here

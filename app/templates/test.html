@@ -36,11 +36,11 @@
       Plotly.plot('chart',graphs,{});
     </script>
 
-    <div id='chart' class='chart'></div>
+    <div id='chart2' class='chart2'></div>
     <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
     <script type='text/javascript'>
       var graphs = {{returnsJSON | safe}};
-      Plotly.plot('chart',graphs,{});
+      Plotly.plot('chart2',graphs,{});
     </script>
   {% endif %}
 {% endblock %}
