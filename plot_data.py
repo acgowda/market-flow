@@ -107,7 +107,7 @@ def plot_returns(returns, predictions, y, target):
         df['strategy'] = np.where(y == yhat, 1, -1)*df['returns']
 
         df['returns_minus_strategy'] = df['returns'] - df['strategy']
-
+        
         #datetime stuff
         dt_all = pd.date_range(start=df.index[0],end=df.index[-1])
         # retrieve the dates that ARE in the original datset
@@ -116,9 +116,9 @@ def plot_returns(returns, predictions, y, target):
         dt_breaks = [d for d in dt_all.strftime("%Y-%m-%d").tolist() if not d in dt_obs]
 
         fig = make_subplots(rows=2, cols=1, shared_xaxes=True,
-                vertical_spacing=0.01, 
-                row_heights=[0.75,0.25])
-
+                        vertical_spacing=0.01, 
+                        row_heights=[0.75,0.25])
+        
         fig.add_trace(go.Scatter(x=df.index, 
                         y=(df['strategy'] + 1).cumprod(), 
                         line=dict(color='green', width=2), 

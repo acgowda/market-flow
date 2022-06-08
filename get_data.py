@@ -302,7 +302,7 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
         df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
     except: 
         pass
-    
+
     # make column names lower cased, because it's easier to type
     for col in df.columns:
         df.rename(columns = {col:col.lower()},inplace = True)
@@ -334,8 +334,10 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
 
     # merge the extra financial info along the column-axis
     df = pd.concat([df,index_df], axis=1, ignore_index=False)
+    last_period = df.iloc[-1:].dropna(1).drop(['close'], axis=1)
+
     df['returns'] = df['close']
-    df['close'] = df['close'].apply(lambda x: 1 if x > 0 else 0)
+    df = create_target(df)
     df.dropna(inplace=True)
 
-    return df
+    return df,last_period
