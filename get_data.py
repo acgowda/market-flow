@@ -317,6 +317,11 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
 
     df = remove_inf(df) # remove inf values
 
+    df = pd.concat([df,index_df], axis=1, ignore_index=False)
+
+    # merge the extra financial info along the column-axis
+    df = create_target(df)
+
     # get day of week; 0 = Monday, ..., so on so forth
     # as a column
     if resolution == '1d':
@@ -328,9 +333,6 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
     # convert categorical data to dummy variables
     df = pd.get_dummies(df)
 
-    # merge the extra financial info along the column-axis
-    df = pd.concat([df,index_df], axis=1, ignore_index=False)
-    df = create_target(df)
     df.dropna(inplace=True)
 
     return df
