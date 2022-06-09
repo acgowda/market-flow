@@ -26,16 +26,116 @@ With this function, we were able to train a successful ANN.
 Meanwhile, we created a separate function called `get_preds_data()` to obtain our prediction data (i.e. the data we used to generate model prediction and returns statistics on our website). This function has a lot of similarities with `get_input_data()`. However, some key differences are that `get_preds_data()` only accepts 1 ticker and that the data is no longer shuffled because we want to preserve the order of our series when plotting it (note that this doesn't imply that the order matters for making predictions). 
 
 Function for getting list of most recent S&P 500 tickers 
+```python
+def get_sp500_tickers():
+    """
+    Returns a data frame of the most recent
+    S&P 500 tickers from the Wikipedia page
+    on the S&P 500 Index
 
-![sp500ticker.png](/images/sp500ticker.png)
+    Also saves a pickle file of the tickers for future use
+    """
+    tickers = pd.read_html(
+    'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]['Symbol']
+
+    with open('sp500_tickers','wb') as f:
+        pickle.dump(tickers,f)
+    return tickers
+```
 
 Function for getting our training data  
+```python
+def get_input_data(tickers,indices = ["^GSPC","^VIX"],
+                   period = '5y',
+                   resolution = '1d',
+                   MAs = [5,20,60,200]):
+    """
+    Gets the data we need for model training or testing;
+    Ensures that the dataset has equal number of buy/sell signals
+    in it, so that our model training and testing process won't
+    be biased
 
-![get-input-data.png](/images/get-input-data.png)
+    Indices will default to "^GSPC","^VIX" which
+    represent the S&P500 index and VIX index on
+    yahoo finance, respectively
+    """
+    df = compile_data(tickers,indices,period,resolution,MAs)
+
+    # obtain whichever is lower: the number of buy signals (1)
+    # or the number of sell signals (0)
+    lower = min(len(df.loc[df['close'] == 1]), len(df.loc[df['close'] == 0]))
+
+    # balance our data: 
+      # get dataframes of buys and sells which have the same number
+      # of buy and sell signals
+      # and combine them into a single dataframe
+    # i.e. downsample whichever has more obs
+    buys_df = df.loc[df['close'] == 1].sample(frac=lower/len(df.loc[df['close'] == 1]))
+    sells_df = df.loc[df['close'] == 0].sample(frac=lower/len(df.loc[df['close'] == 0]))
+    df_new = pd.concat([buys_df,sells_df],axis = 0)
+
+    # shuffle the data
+    df_new = df_new.sample(frac = 1)
+
+    return df_new
+```
 
 Function for getting prediction data  
+```python
+def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
+                   period = '4y',
+                   resolution = '1d',
+                   MAs = [5,20,60,200]):
+    """
+    Get data for model to make predictions on
+    """
+    # yahoo finance doesn't like '.' full stops, and prefers '-' dashes
+    ticker = ticker.replace('.', '-')
+    # read in a specific ticker's historical financial information
+    df = yf.Ticker(ticker).history(period = period,interval = resolution)
+    index_df = get_index_data(indices,period,resolution,MAs)
 
-![get-preds-data.png](/images/get-preds-data.png)
+    # drop columns we won't be using from that dataframe
+    df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
+    # make column names lower cased, because it's easier to type
+    for col in df.columns:
+        df.rename(columns = {col:col.lower()},inplace = True)
+
+    # drop NAs for jic
+    df.dropna(inplace = True)
+    
+    # add a few rolling window columns on our closing price
+    df = create_close_MAs(df,MAs)
+    
+    # normalise all columns as percentages
+    df = df.pct_change()
+
+    # fill foward missing values just in case any came up
+    df.fillna(method = 'ffill')
+
+    df = remove_inf(df) # remove inf values
+
+    df = pd.concat([df,index_df], axis=1, ignore_index=False)
+
+    df['returns'] = df['close']
+    # merge the extra financial info along the column-axis
+    df = create_target(df)
+
+    # get day of week; 0 = Monday, ..., so on so forth
+    # as a column
+    if resolution == '1d':
+      df['day'] = list(pd.Series(df.index).apply(lambda x: str(x.weekday())))
+
+    # get month of year as a column
+    df['month'] = list(pd.Series(df.index).apply(lambda x: str(x.month)))
+
+    # convert categorical data to dummy variables
+    df = pd.get_dummies(df)
+
+    df.dropna(inplace=True)
+
+    return df
+```
 
 
 ## Model Training
