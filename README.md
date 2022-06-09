@@ -228,3 +228,4 @@ Here is a screenshot of the `test.html` page after a user makes a submission:
 
 ## References:
 https://python.plainenglish.io/a-simple-guide-to-plotly-for-plotting-financial-chart-54986c996682
+https://pythonprogramming.net/cryptocurrency-recurrent-neural-network-deep-learning-python-tensorflow-keras/
