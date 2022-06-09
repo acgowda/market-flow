@@ -11,7 +11,7 @@ Then, we trained our model using Tensorflow and Keras on Google Colab and data f
 
 We also deployed our model using a Flask web app. This app allows users to input a desired stock, and outputs a prediction for the next week, as well as an interactive plot that displays the model's performance on the most recent 6 months of data. Another plot displays the model's net profit over two years when using it to make trades and compares it to the actual returns. The details of this web app can be viewed in the `app` folder. To run the web app locally, clone the repo and run `flask run`.
 
-Finally, we published our app onto the web using Heroku. See [https://market-flow.herokuapp.com](https://market-flow.herokuapp.com)
+Finally, we published our app onto the web using Heroku. See [https://market-flow.herokuapp.com](https://market-flow.herokuapp.com){:target="_blank"}
 
 
 ## Data Processing
@@ -203,7 +203,7 @@ def about():
     return render_template('about.html')
 ```
 
-These render the `main.html` and `about.html` files found in the `templates` folder. In particular, our html uses Jinja, which allows for html files to extend a 'base' file, as well as convenient parsing of Python variables. You can read more about Jinja [here](https://jinja.palletsprojects.com/en/3.1.x/).
+These render the `main.html` and `about.html` files found in the `templates` folder. In particular, our html uses Jinja, which allows for html files to extend a 'base' file, as well as convenient parsing of Python variables. You can read more about Jinja [here](https://jinja.palletsprojects.com/en/3.1.x/){:target="_blank"}.
 
 Our implementation of the `test()` function performs a POST request to retrieve the user's desired stock and makes a prediction on this stock, as well as evaluates the model on the past 6 months. Then, it uses the `plot_ticker()` and `plot_returns()` functions in the `plot_data.py` file which build and return prediction and returns plots. We use JSON encoding to process the figure and render it with Flask along with the `test.html` file.
 
