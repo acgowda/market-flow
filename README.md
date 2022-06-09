@@ -25,15 +25,16 @@ With this function, we were able to train a successful ANN.
 
 Meanwhile, we created a separate function called `get_preds_data()` to obtain our prediction data (i.e. the data we used to generate model prediction and returns statistics on our website). This function has a lot of similarities with `get_input_data()`. However, some key differences are that `get_preds_data()` only accepts 1 ticker and that the data is no longer shuffled because we want to preserve the order of our series when plotting it (note that this doesn't imply that the order matters for making predictions). 
 
-**describe get_data.py here; at least one code snippet and one figure**
+Function for getting list of most recent S&P 500 tickers 
 
-Function for getting list of most recent S&P 500 tickers
 ![sp500ticker.png](/images/sp500ticker.png)
 
-Function for getting our training data
+Function for getting our training data  
+
 ![get-input-data.png](/images/get-input-data.png)
 
-Function for getting prediction data
+Function for getting prediction data  
+
 ![get-preds-data.png](/images/get-preds-data.png)
 
 
