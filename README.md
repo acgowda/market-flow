@@ -27,6 +27,16 @@ Meanwhile, we created a separate function called `get_preds_data()` to obtain ou
 
 **describe get_data.py here; at least one code snippet and one figure**
 
+Function for getting list of most recent S&P 500 tickers
+![sp500ticker.png](/images/sp500ticker.png)
+
+Function for getting our training data
+![get-input-data.png](/images/get-input-data.png)
+
+Function for getting prediction data
+![get-preds-data.png](/images/get-preds-data.png)
+
+
 ## Model Training
 
 Now, we build and train our model. You can view the details in `model/model_testing.ipynb`. Reading in the .csv file, the dataframe gives stock data with the following columns:
