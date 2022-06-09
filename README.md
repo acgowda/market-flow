@@ -17,7 +17,17 @@ Finally, we deployed our app onto the web using Heroku. See [https://market-flow
 ## Data Processing
 The first step of our project involved performed data collection and processing. This is all done within the `get_data.py` file. 
 
-To begin, we built a function called `get_sp500_tickers()` to get a list of ticker symbols for stocks in the S&P 500 index. We then feed this list of tickers into a function called `get_input_data()`, which relies on several functions nested within each other to (1) obtain our data from yahoo finance; (2) merge different datasets together to build our feature space; (3) normalize the data by converting columns from raw price or volume data to percentage change data; (4) create moving average features; (5) deal with NaN and infinite vlaues; (6) create our target variable; (7) create temporal indicator variables; (8) shuffle our data appropriately; and (9) ensure that our binary classification task is balanced (i.e. target feature contains an equal number of buy and sell signals).
+To begin, we built a function called `get_sp500_tickers()` to get a list of ticker symbols for stocks in the S&P 500 index. We then feed this list of tickers into a function called `get_input_data()`, which relies on several functions nested within each other to perform the following:
+
+1. Obtain our data from yahoo finance.
+2. Merge different datasets together to build our feature space.
+3. Normalize the data by converting columns from raw price or volume data to percentage change data.
+4. Create moving average features.
+5. Deal with NaN and infinite vlaues.
+6. Create our target variable.
+7. Create temporal indicator variables.
+8. Shuffle our data appropriately.
+9. Ensure that our binary classification task is balanced (i.e. target feature contains an equal number of buy and sell signals).
 
 We also implemented a certain level of flexibility into the `get_input_data()` function, allowing the user to specify whether they want weekly or daily observations in their training set; the number of moving average columns they want to add to their feature space; the index and commodity pricing and volumne information that they wanted to add to their feature-space; and the period over which they wanted their information to come from.
 
