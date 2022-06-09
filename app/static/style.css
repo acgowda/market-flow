@@ -23,47 +23,31 @@ h1 {
 
 h2 {
     margin: 1rem 0;
-    /*text-align: center;*/
     font-size: 23px;
 }
 
 nav {
-    text-align: center;
-}
+    background-color: #A5BCD0;
+    overflow: auto;
+    width: 100%;
+*/}
 
 nav ul {
-    /* center w/o sides */
-    /*display: inline-block; */
-
     list-style-type: none;
     margin: 0;
     padding: 0;
-    overflow: hidden;
-    background-color: #A5BCD0;
-}
-
-nav ul li {
-    /* left or center w/o sides */
-    float: left; 
-
-    /* center w/ sides */
-    /*display: inline;*/
-
-    /*border-right: 1px solid white;*/
 }
 
 nav ul li a {
-    /* left or center w/o sides */
-    display: block; 
-
-    /* center w/ sides */
-    /*display: inline-block;*/
-
-    color: black;
-    padding: 14px 16px;
     text-decoration: none;
-    /*font-size: 15px;*/
+    color: black;
+    float: left;
+    padding: 12px 0px;
+    width: 33.333%;
+    text-align: center;
+    font-size: 17px;
 }
+
 
 nav ul li a:hover {
     background-color: #547DA0;
@@ -75,13 +59,68 @@ nav ul li a:hover {
     color: #A2D6F9;
 }
 
+@media screen and (max-width: 500px) {
+  nav ul li a {
+    float: none;
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
+
 .content {
     padding: 0 1rem 1rem;
-    /*border-radius: 25px;*/
-    /*border: 3px solid orange;*/
 }
 
 hr {
     border: none;
     border-top: 2px solid lightgray;
+}
+
+
+
+
+
+
+
+.column {
+  float: left;
+  width: 31%;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin: 8px;
+}
+
+.container {
+  padding: 0 16px;
+}
+
+.container::after, .row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.title {
+    color: gray;
+}
+
+@media screen and (max-width: 650px) {
+  .column {
+    width: 100%;
+    display: block;
+  }
+}
+
+div a {
+    color: black;
+}
+
+img:hover {
+    filter: alpha(opacity=80);
+    opacity: .8;
 }

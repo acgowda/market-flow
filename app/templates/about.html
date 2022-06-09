@@ -14,7 +14,47 @@
 <!-- CONTENT BEGINS HERE -->
 
 {% block content %}
-  <p>
-    Created by Jonathn Chang, Ananda Gowda, and Shannan Liu.
-  </p>
+Created by UCLA Students Jonathn Chang, Ananda Gowda, and Shannan Liu as their final project for PIC16B.
+<br><br>
+
+  <div class="row">
+    <a href="https://github.com/jonchang153" target="_blank">
+      <div class="column">
+        <div class="card">
+          <img src="{{ url_for('static', filename='jonathn.png') }}" alt="Jonathn" style="width:100%">
+          <div class="container">
+            <h2>Jonathn Chang</h2>
+            <p class="title">Just a regular PIC16B student</p>
+            <p>Second-year Applied Math major with Specialization in Computing.</p>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <a href="https://github.com/acgowda" target="_blank">
+      <div class="column">
+        <div class="card">
+          <img src="{{ url_for('static', filename='ananda.png') }}" alt="Ananda" style="width:100%">
+          <div class="container">
+            <h2>Ananda Gowda</h2>
+            <p class="title">Computer Wizard</p>
+            <p>Third-year Data Theory major.</p>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <a href="https://github.com/shannan-liu1" target="_blank">
+      <div class="column">
+        <div class="card">
+          <img src="{{ url_for('static', filename='shannan.png') }}" alt="Shannan" style="width:100%">
+          <div class="container">
+            <h2>Shannan Liu</h2>
+            <p class="title">Chess Grandmaster</p>
+            <p>Fourth-year Business-Economics major. Going to MIT. Chess prodigy.</p>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
 {% endblock %}
