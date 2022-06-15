@@ -56,13 +56,14 @@ def remove_inf(df):
 def create_target(df):
     """
     Used to create the target variable, which indicates
-    if a stock's clsing price will be up or down in the next period
+    if a stock's closing price will be up or down in the 
+    next period
     """
     df = df.copy()
     #df['close'] = df['close'].pct_change()
     #df.dropna(inplace = True) #drop nan
-    df['close'] = df['close'].apply(lambda x: 1 if x > 0 else 0)
     df['close'] = df['close'].shift(-1)
+    df['target'] = df['close'].apply(lambda x: 1 if x > 0 else 0)
     return df
 
 def create_salient_target(df):
