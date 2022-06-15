@@ -319,15 +319,13 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
 
     df = pd.concat([df,index_df], axis=1, ignore_index=False)
 
-    df['returns'] = df['close']
-
     # merge the extra financial info along the column-axis
     df = create_target(df)
 
     # get day of week; 0 = Monday, ..., so on so forth
     # as a column
     if resolution == '1d':
-      df['day'] = list(pd.Series(df.index).apply(lambda x: str(x.weekday())))
+        df['day'] = list(pd.Series(df.index).apply(lambda x: str(x.weekday())))
 
     # get month of year as a column
     df['month'] = list(pd.Series(df.index).apply(lambda x: str(x.month)))

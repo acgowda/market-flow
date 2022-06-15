@@ -12,6 +12,8 @@ import yfinance as yf
 from get_data import get_preds_data
 from plot_data import plot_ticker, plot_returns
 
+from datetime import timedelta
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -50,16 +52,17 @@ def test():
                                      resolution = resolution,
                                      MAs = [4,21,52])
 
-        returns = test['returns'][:-1]
+        returns = test['close'][:-1]
 
-        high_change_cols = ['volume', 'GC=F-volume', 'returns']
+        high_change_cols = ['volume', 'GC=F-volume','close']
         test = test.drop(high_change_cols, axis = 1)
-        today = test.iloc[-1:].drop('close', axis=1)
+        today = test.iloc[-1:].drop(['target'], axis=1)
 
         test = test.iloc[:-1]
+        test.index = test.index + timedelta(days=7)
 
-        X = test.drop(columns=['close'],axis = 1)
-        y = test['close']
+        X = test.drop(columns=['target'],axis = 1)
+        y = test['target']
         
         _, accuracy = model.evaluate(X,y)
         preds = model.predict(X)
@@ -67,11 +70,9 @@ def test():
 
         d = {0: 'down', 1: 'up'}
         pred = d[int(tf.math.argmax(model.predict(today), 1))]
-        
          
         tickerJSON = json.dumps(plot_ticker(df, target), cls=plotly.utils.PlotlyJSONEncoder)
         returnsJSON = json.dumps(plot_returns(returns, preds, target), cls=plotly.utils.PlotlyJSONEncoder)
-
 
         # once generated, return the prediction and figure here
         return render_template('test.html', target=target, 
