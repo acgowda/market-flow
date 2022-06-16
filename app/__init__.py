@@ -59,7 +59,7 @@ def test():
         test.index = test.index + timedelta(days=7)
         returns = test['close']
 
-        X = test.drop(columns=['target'],axis = 1)
+        X = test.drop(columns=['target','close'],axis = 1)
         y = test['target']
         
         _, accuracy = model.evaluate(X,y)
