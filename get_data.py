@@ -274,16 +274,15 @@ def get_input_data(tickers,indices = ["^GSPC","^VIX"],
 
     # obtain whichever is lower: the number of buy signals (1)
     # or the number of sell signals (0)
-    lower = min(len(df.loc[df['close'] == 1]), len(df.loc[df['close'] == 0]))
-
+    lower = min(len(df.loc[df['target'] == 1]), len(df.loc[df['target'] == 0]))
 
     # balance our data: 
       # get dataframes of buys and sells which have the same number
       # of buy and sell signals
       # and combine them into a single dataframe
     # i.e. downsample whichever has more obs
-    buys_df = df.loc[df['close'] == 1].sample(frac=lower/len(df.loc[df['close'] == 1]))
-    sells_df = df.loc[df['close'] == 0].sample(frac=lower/len(df.loc[df['close'] == 0]))
+    buys_df = df.loc[df['target'] == 1].sample(frac=lower/len(df.loc[df['target'] == 1]))
+    sells_df = df.loc[df['target'] == 0].sample(frac=lower/len(df.loc[df['target'] == 0]))
     df_new = pd.concat([buys_df,sells_df],axis = 0)
 
     # shuffle the data
