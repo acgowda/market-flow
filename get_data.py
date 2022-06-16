@@ -190,7 +190,10 @@ def compile_data(tickers,indices = ["^GSPC","^VIX"],
     for ticker in tickers:
         try:
             # yahoo finance doesn't like '.' full stops, and prefers '-' dashes
-            ticker = ticker.replace('.', '-')
+            # for american equities
+            if ticker.replace('.','').isalpha():
+                ticker = ticker.replace('.', '-')
+                
             # read in a specific ticker's historical financial information
             df = yf.Ticker(ticker).history(period = period,interval = resolution)
             # drop columns we won't be using from that dataframe
@@ -293,7 +296,10 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
     Get data for model to make predictions on
     """
     # yahoo finance doesn't like '.' full stops, and prefers '-' dashes
-    ticker = ticker.replace('.', '-')
+    # for American equities
+    if ticker.replace('.','').isalpha():
+        ticker = ticker.replace('.', '-')
+        
     # read in a specific ticker's historical financial information
     df = yf.Ticker(ticker).history(period = period,interval = resolution)
     index_df = get_index_data(indices,period,resolution,MAs)
@@ -303,7 +309,7 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
         df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
     except:
         pass
-    
+
     # make column names lower cased, because it's easier to type
     for col in df.columns:
         df.rename(columns = {col:col.lower()},inplace = True)
