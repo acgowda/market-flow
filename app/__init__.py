@@ -52,14 +52,12 @@ def test():
                                      resolution = resolution,
                                      MAs = [4,21,52])
 
-        returns = test['close'][:-1]
-
-        high_change_cols = ['volume', 'GC=F-volume','close']
+        high_change_cols = ['volume', 'GC=F-volume']
         test = test.drop(high_change_cols, axis = 1)
-        today = test.iloc[-1:].drop(['target'], axis=1)
-
+        today = test.iloc[-1:].drop(['target','close'], axis=1)
         test = test.iloc[:-1]
         test.index = test.index + timedelta(days=7)
+        returns = test['close']
 
         X = test.drop(columns=['target'],axis = 1)
         y = test['target']
