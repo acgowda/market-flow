@@ -191,9 +191,12 @@ def compile_data(tickers,indices = ["^GSPC","^VIX"],
         try:
             # yahoo finance doesn't like '.' full stops, and prefers '-' dashes
             # for american equities
-            if ticker.replace('.','').isalpha():
-                ticker = ticker.replace('.', '-')
-                
+            try:
+                if ticker.replace('.','').isalpha():
+                    ticker = ticker.replace('.', '-')
+            except:
+                pass
+
             # read in a specific ticker's historical financial information
             df = yf.Ticker(ticker).history(period = period,interval = resolution)
             # drop columns we won't be using from that dataframe
@@ -297,8 +300,11 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
     """
     # yahoo finance doesn't like '.' full stops, and prefers '-' dashes
     # for American equities
-    if ticker.replace('.','').isalpha():
-        ticker = ticker.replace('.', '-')
+    try:
+        if ticker.replace('.','').isalpha():
+            ticker = ticker.replace('.', '-')
+    except:
+        pass
         
     # read in a specific ticker's historical financial information
     df = yf.Ticker(ticker).history(period = period,interval = resolution)
