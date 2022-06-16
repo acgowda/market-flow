@@ -299,7 +299,11 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
     index_df = get_index_data(indices,period,resolution,MAs)
 
     # drop columns we won't be using from that dataframe
-    df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
+    try:
+        df.drop(['Dividends','Stock Splits'],axis = 1,inplace = True)
+    except:
+        pass
+    
     # make column names lower cased, because it's easier to type
     for col in df.columns:
         df.rename(columns = {col:col.lower()},inplace = True)
