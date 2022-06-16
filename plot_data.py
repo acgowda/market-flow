@@ -100,6 +100,7 @@ def plot_returns(returns, predictions, target):
         
     yhat = np.argmax(predictions, 1)
     df = pd.DataFrame(returns)
+    df['returns'] = df['close']
 
     df['strategy'] = (np.array([1 if y == 1 else -1 for y in yhat])*df['returns'] + 1).cumprod() - 1
     # df['strategy'] =  ((yhat - 0.25) * df['returns'] + 1).cumprod() - 1
