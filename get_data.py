@@ -256,7 +256,8 @@ def compile_data(tickers,indices = ["^GSPC","^VIX"],
 
     return main_df
 
-def get_input_data(tickers,indices = ["^GSPC","^VIX"],
+def get_input_data(tickers,
+                   indices = ["^GSPC","^VIX"],
                    period = '5y',
                    resolution = '1d',
                    MAs = [5,20,60,200]):
