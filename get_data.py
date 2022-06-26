@@ -292,7 +292,7 @@ def get_input_data(tickers,
     return df_new
 
 def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
-                   period = '4y',
+                   period = '3y',
                    resolution = '1d',
                    MAs = [5,20,60,200]):
     """
@@ -305,7 +305,7 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
             ticker = ticker.replace('.', '-')
     except:
         pass
-        
+    
     # read in a specific ticker's historical financial information
     df = yf.Ticker(ticker).history(period = period,interval = resolution)
     index_df = get_index_data(indices,period,resolution,MAs)
@@ -342,10 +342,16 @@ def get_preds_data(ticker,indices = ["^GSPC","^VIX"],
     # get day of week; 0 = Monday, ..., so on so forth
     # as a column
     if resolution == '1d':
-        df['day'] = list(pd.Series(df.index).apply(lambda x: str(x.weekday())))
+        day = list(pd.Series(df.index).apply(lambda x: int(x.weekday())))
+        for i in range(1,6):
+          df[f'day_{i}'] = np.where(day == i,1,0)
 
-    # get month of year as a column
-    df['month'] = list(pd.Series(df.index).apply(lambda x: str(x.month)))
+    # get month of year as a list
+    month = list(pd.Series(df.index).apply(lambda x: int(x.month)))
+    
+    # convert month into dummies
+    for i in range(1,13):
+        df[f'month_{i}'] = np.where(month == i,1,0)
 
     # convert categorical data to dummy variables
     df = pd.get_dummies(df)
